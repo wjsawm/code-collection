@@ -1,0 +1,41 @@
+拷贝文件
+需求：
+--  将文件拷贝到指定目录
+--  如果目录不存在，则递归创建
+--  拷贝文件
+方法传参：文件路径、拷贝目标路径
+public void copyFile(String filePath, String newDirPath) {
+        if(filePath == null || filePath.length() == 0){
+            return;
+        }
+        try {
+            File file = new File(filePath);
+            if(!file.exists()){
+                return;
+            }
+            //判断目录是否存在，如果不存在，则创建
+            File newDir = new File(newDirPath);
+            if(!newDir.exists()){
+                newDir.mkdirs();
+            }
+            //创建目标文件
+            File newFile = newFile(context, newDirPath, file.getName());
+            InputStream is = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            byte[] buffer = new byte[4096];
+            int byteCount = 0;
+            while ((byteCount = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, byteCount);
+            }
+            fos.flush();
+            is.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
