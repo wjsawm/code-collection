@@ -1,0 +1,25 @@
+剪切文件
+需求：
+--  将文件剪切到指定目录
+--  如果目录不存在，则递归创建
+--  拷贝文件，删除源文件
+方法传参：源文件路径、拷贝目标路径
+    public void moveFile(String filePath, String newDirPath) {
+        if(filePath == null || filePath.length() == 0 
+        || newDirPath==null || newDirPath.length() == 0){
+            return;
+        }
+        try {
+            //拷贝文件
+            copyFile(filePath, newDirPath);
+            //删除原文件
+            removeFile(filePath);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
