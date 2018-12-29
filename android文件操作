@@ -1,3 +1,12 @@
+创建文件
+需求：
+-- 在指定目录创建文件，
+-- 先判断目录是否存在，如果不存在，则递归创建，
+-- 再判断文件是否存在，如果不存在，则创建
+-- 最后，返回文件对象
+方法传参：目标路径、文件名称
+
+
 public File newFile(String filePath, String fileName){
         if(filePath == null || filePath.length() == 0 
          || fileName == null || fileName.length() == 0){
