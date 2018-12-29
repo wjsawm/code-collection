@@ -1,0 +1,39 @@
+拷贝目录
+需求：
+--  将整个目录拷贝到指定目录
+--  如果目录不存在，则递归创建
+--  递归拷贝文件
+方法传参：源目录路径、拷贝目标路径
+public void copyDir(String dirPath, String newDirPath) {
+        if(dirPath == null || dirPath.length() == 0 
+          || newDirPath==null || newDirPath.length() == 0){
+            return;
+        }
+        try {
+            File file = new File(dirPath);
+            if(!file.exists() && !file.isDirectory()){
+                return;
+            }
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0){
+                return;
+            }
+            File newFile = new File(newDirPath);
+            newFile.mkdirs();
+            for (File fileTemp : childFile) {
+                if(fileTemp.isDirectory()){
+                    copyDir(fileTemp.getPath(), newDirPath + "/" + fileTemp.getName());
+                }else {
+                    copyFile(fileTemp.getPath(), newDirPath);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
