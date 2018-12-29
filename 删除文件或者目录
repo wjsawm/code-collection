@@ -1,0 +1,45 @@
+删除文件或目录
+需求：
+--  可删除单个文件，也可删除整个目录，
+--  先判断File类型是文件还是目录类型，
+--  如果是文件，则直接删除
+--  如果是目录，则获得目录信息，递归删除文件及文件夹
+方法传参：目标路径（文件或目录路径）
+    public void removeFile(String filePath) {
+        if(filePath == null || filePath.length() == 0){
+            return;
+        }
+        try {
+            File file = new File(filePath);
+            if(file.exists()){
+                removeFile(file);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+   private void removeFile(File file){
+        //如果是文件直接删除
+        if(file.isFile()){
+            file.delete();
+            return;
+        }
+        //如果是目录，递归判断，如果是空目录，直接删除，如果是文件，遍历删除
+        if(file.isDirectory()){
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0){
+                file.delete();
+                return;
+            }
+            for(File f : childFile){
+                removeFile(f);
+            }
+            file.delete();
+        }
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
