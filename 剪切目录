@@ -1,0 +1,25 @@
+剪切目录
+需求：
+--  将目录剪切到指定目录
+--  如果目录不存在，则递归创建
+--  递归拷贝文件，删除源目录
+方法传参：源目录路径、拷贝目标路径
+      public void moveDir(String dirPath, String newDirPath) {
+        if(dirPath == null || dirPath.length() == 0 
+        || newDirPath==null || newDirPath.length() == 0){
+            return;
+        }
+        try {
+            //拷贝目录
+            copyDir(dirPath, newDirPath);
+            //删除目录
+            removeFile(dirPath);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
