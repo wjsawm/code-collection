@@ -1,0 +1,48 @@
+获得文件或目录大小（size）
+需求：
+--  可获得单个文件大小，也可获得目录大小，
+--  先判断File类型是文件还是目录类型，
+--  如果是文件，则直接获取大小并返回
+--  如果是目录，递归获得各文件大小累加，然后返回
+方法传参：目标路径（文件或目录路径）
+    float size = 0;
+    public float getFileSize(String filePath) {
+        if(filePath == null || filePath.length() == 0){
+            return 0;
+        }
+        try {
+            File file = new File(filePath);
+            if(file.exists()){
+                size = 0;
+                return getSize(file);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    private float getSize(File file) {
+        try {
+            //如果是目录则递归计算其内容的总大小
+            if (file.isDirectory()) {
+                File[] children = file.listFiles();
+                for (File f : children) {
+                    size += getSize(f);
+                }
+                return size;
+            }
+            //如果是文件则直接返回其大小
+            else {
+                return (float) file.length();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return size;
+    }
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/8dc08476261a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
