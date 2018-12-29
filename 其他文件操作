@@ -1,0 +1,98 @@
+1.文件与存储路径
+文件、文件夹的创建均使用File类
+File dir= new File(getExternalFilesDir(null).getPath()+"/a/b");
+if (!dir.exists()) {
+   dir.mkdirs();//递归创建目录
+}
+File file = new File(getExternalFilesDir(null).getPath()+"/a.png");
+if (!file.exists()) {
+        file.createNewFile();//创建单个文件
+}
+
+不要硬编码文件路径，如：new File("/mnt/sdcard/tupian.jpg");
+请使用 Android 文件系统 API 访问：
+
+通过Environment获取的：
+Environment.getDataDirectory().getPath() //获得根目录/data (内部存储路径)
+Environment.getDownloadCacheDirectory().getPath()  //获得缓存目录/cache
+Environment.getExternalStorageDirectory().getPath() //获得SD卡目录/mnt/sdcard（获取的是手机外置sd卡的路径）
+Environment.getRootDirectory().getPath()  //获得系统目录/system
+
+通过Context获取的：
+Context.getDatabasePath() //返回通过Context.openOrCreateDatabase 创建的数据库文件
+Context.getCacheDir().getPath() //用于获取APP的cache目录 /data/data/<application package>/cache目录
+Context.getExternalCacheDir().getPath()//用于获取APP的在SD卡中的cache目录/mnt/sdcard/Android/data/<application package>/cache
+Context.getFilesDir().getPath() //用于获取APP的files目录 /data/data/<application package>/files
+Context.getObbDir().getPath() //用于获取APP SDK中的obb目录 /mnt/sdcard/Android/obb/<application package>
+Context.getPackageName() //用于获取APP的所在包目录
+Context.getPackageCodePath() //用于获得当前应用程序对应的 apk 文件的路径
+Context.getPackageResourcePath() //用于获取该程序的安装包路径
+......
+
+测试：
+Activity中测试代码（Context可以不写）：
+        Log.i("File1",Environment.getDataDirectory().getPath()); //获得根目录/data (内部存储路径)
+        Log.i("File2",Environment.getDownloadCacheDirectory().getPath());  //获得缓存目录/cache
+        Log.i("File3",Environment.getExternalStorageDirectory().getPath()); //获得SD卡目录/mnt/sdcard（获取的是手机外置sd卡的路径）
+        Log.i("File4",Environment.getRootDirectory().getPath());  //获得系统目录/system
+        Log.i("File5",getCacheDir().getPath()); //用于获取APP的cache目录 /data/data/<application package>/cache目录
+        Log.i("File6",getExternalCacheDir().getPath());   //用于获取APP的在SD卡中的cache目录/mnt/sdcard/Android/data/<application package>/cache
+        Log.i("File7",getFilesDir().getPath());  //用于获取APP的files目录 /data/data/<application package>/files
+        Log.i("File8",getExternalFilesDir(null).getPath());//用于获取APP的在SD卡中的file目录/mnt/sdcard/Android/data/<application package>/file
+        Log.i("File9",getCacheDir().getPath());//用于获取APP的files目录 /data/cache/<application package>/files
+        Log.i("File10",getObbDir().getPath());  //用于获取APP SDK中的obb目录 /mnt/sdcard/Android/obb/<application package>
+        Log.i("File11",getPackageName()); //用于获取APP的所在包目录
+        Log.i("File12",getPackageCodePath());  //用于获得当前应用程序对应的 apk 文件的路径
+        Log.i("File13",getPackageResourcePath());  //用于获取该程序的安装包路径
+输出结果：
+        03-01 15:08:31.453 13663-13663/? I/File1: /data
+        03-01 15:08:31.453 13663-13663/? I/File2: /cache
+        03-01 15:08:31.453 13663-13663/? I/File3: /storage/emulated/0
+        03-01 15:08:31.453 13663-13663/? I/File4: /system
+        03-01 15:08:31.453 13663-13663/? I/File5: /data/data/iwangzhe.paizhaocaiqie/cache
+        03-01 15:08:31.453 13663-13663/? I/File6: /storage/emulated/0/Android/data/iwangzhe.paizhaocaiqie/cache
+        03-01 15:08:31.453 13663-13663/? I/File7: /data/data/iwangzhe.paizhaocaiqie/files
+        03-01 15:08:31.453 13663-13663/? I/File8: /storage/emulated/0/Android/data/iwangzhe.paizhaocaiqie/files
+        03-01 15:08:31.453 13663-13663/? I/File9: /data/data/iwangzhe.paizhaocaiqie/cache
+        03-01 15:08:31.453 13663-13663/? I/File10: /storage/emulated/0/Android/obb/iwangzhe.paizhaocaiqie
+        03-01 15:08:31.453 13663-13663/? I/File11: iwangzhe.paizhaocaiqie
+        03-01 15:08:31.453 13663-13663/? I/File12: /data/app/iwangzhe.paizhaocaiqie-1.apk
+        03-01 15:08:31.453 13663-13663/? I/File13: /data/app/iwangzhe.paizhaocaiqie-1.apk
+
+
+SD卡可用性检查
+
+当使用外部存储时:
+必须配置权限，当targetsdk>23（6.0）时，使用动态权限
+请参考：https://www.jianshu.com/p/8e37e9cf20a5
+必须检查外部存储的可用性;
+
+
+文件共享
+
+应用间共享文件时，不要通过放宽文件系统权限的方式去实现，而应使用FileProvider
+请参考：https://www.jianshu.com/p/bec4497c2a63
+
+
+Sharepreference
+
+SharedPreference 中只能存储简单数据类型（int、boolean、String 等），复杂数据类型建议使用文件、数据库等其他方式存储;
+SharedPreference 最好封装一下，且所有Key应该统一管理维护，否则容易出现数据存取错乱，不好维护等现象；
+SharedPreference 提 交 数 据 时 ， 尽量使用 apply() ， 而非commit()，原因：
+-- apply 方法 进行提交会先写入内存，然后异步写入磁盘
+-- commit 方法 是直接写入磁盘。
+方法优缺点对比：
+如果频繁操作SharedPreference时 ，apply 的性能会优于 commit；
+如果希望立刻获取存储操作的结果，并根据结果做相应的其他操作时，应当使用 commit；
+
+5.DB
+-- 数据库 Cursor 必须确保使用完后关闭，以免内存泄漏;
+-- 多线程操作写入数据库时，需要使用事务，以免出现同步问题，因为transaction 是一次原子操作，因此处于事务中的操作是线程安全的，
+如果多线程不使用事务，容易造成数据库异常，提示数据库已被锁住。
+-- 大数据写入数据库时，请使用事务或其他能够提高 I/O 效率的机制，保证执行速度；
+-- 执行 SQL 语句时，应使用 SQLiteDatabase#insert()、update()、delete()，尽量少使用 SQLiteDatabase#execSQL()，以免 SQL 注入风险；
+
+作者：Android技术分享
+链接：https://www.jianshu.com/p/0515df3b697d
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
